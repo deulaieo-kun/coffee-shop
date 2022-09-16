@@ -10,7 +10,6 @@
 .logo img {
   width: calc(100% -60%);
   object-fit: contain;
-  transform: scale(0.8);
 }
 
 .logo h5 {
