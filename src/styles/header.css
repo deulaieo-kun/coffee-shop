@@ -8,9 +8,9 @@
   text-align: center;
 }
 .logo img {
-  width: calc(100% - 60%);
+  width: calc(100% -60%);
   object-fit: contain;
-  margin-top: -40px;
+  transform: scale(0.8);
 }
 
 .logo h5 {
@@ -84,7 +84,6 @@
   }
   .logo h5 {
     font-size: 0.8rem;
-    margin-top: -15px;
   }
 
   .navigation {
@@ -138,9 +137,7 @@
     line-height: 80px;
   }
 
-  .logo img {
-    margin-top: -70px !important;
-  }
+ 
   .logo h5 {
     margin-top: -55px;
   }

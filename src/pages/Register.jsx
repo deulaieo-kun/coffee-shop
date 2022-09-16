@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import Helmet from "../components/Helmet/Helmet";
-import CommonSection from "../components/UI/common-section/CommonSection";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
+import "../styles/login.css";
+import logo from "../assets/images/snack.png";
 
 const Register = () => {
   const signupNameRef = useRef();
@@ -15,13 +16,18 @@ const Register = () => {
 
   return (
     <Helmet title="Signup">
-      <CommonSection title="Signup" />
       <section>
         <Container>
           <Row>
-            <Col lg="6" md="6" sm="12" className="m-auto text-center">
-              <form className="form mb-5" onSubmit={submitHandler}>
-                <div className="form__group">
+            <Col lg="8" md="8" sm="10" className="m-auto text-center">
+              <form className="form mb-5 br-3" onSubmit={submitHandler}>
+                <div className="pb-5 banner">
+                  <img src={logo} alt="Burgers and Fries" />
+                </div>
+                <div className="p-2">
+                  <h4>Create an Account</h4>
+                </div>
+                <div className="form__group pt-4">
                   <input
                     type="text"
                     placeholder="Full name"
@@ -37,7 +43,7 @@ const Register = () => {
                     ref={signupEmailRef}
                   />
                 </div>
-                <div className="form__group">
+                <div className="form__group pb-4">
                   <input
                     type="password"
                     placeholder="Password"
@@ -49,7 +55,9 @@ const Register = () => {
                   Sign Up
                 </button>
               </form>
-              <Link to="/login">Already have an account? Login</Link>
+              <span>
+                Already have an account? <Link to="/login">Login</Link>
+              </span>
             </Col>
           </Row>
         </Container>

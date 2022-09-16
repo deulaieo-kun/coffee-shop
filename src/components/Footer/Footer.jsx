@@ -1,10 +1,7 @@
 import React from "react";
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
-import logo from "../../assets/images/res-logo.png";
-
+import logo from "../../assets/images/snack.png";
 import "../../styles/footer.css";
-
-import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -14,10 +11,10 @@ const Footer = () => {
           <Col lg="3" md="4" sm="6">
             <div className=" footer__logo text-start">
               <img src={logo} alt="logo" />
-              <h5>Tasty Treat</h5>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt pariatur accusamus
+                Tired from work? Don't have the energy to study? In dire need of
+                a recreational bond with your loved ones? Take a break here at
+                Snack Break!
               </p>
             </div>
           </Col>
@@ -41,14 +38,16 @@ const Footer = () => {
             <h5 className="footer__title">Contact</h5>
             <ListGroup className="deliver__time-list">
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <p>Location: ZindaBazar, Sylhet-3100, Bangladesh</p>
+                <p>
+                  Location: The IT Park, Brgy Lahug <br /> Cebu City Philippines
+                </p>
               </ListGroupItem>
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <span>Phone: 01712345678</span>
+                <span>Phone: 09062417894</span>
               </ListGroupItem>
 
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <span>Email: example@gmail.com</span>
+                <span>Email: snackBreak@gmail.com</span>
               </ListGroupItem>
             </ListGroup>
           </Col>
@@ -68,38 +67,26 @@ const Footer = () => {
         <Row className="mt-5">
           <Col lg="6" md="6">
             <p className="copyright__text">
-              Copyright - 2022, website made by Muhibur Rahman. All Rights
-              Reserved.
+              Copyright - 2022 Snack Break PH. All Rights Reserved.
             </p>
           </Col>
           <Col lg="6" md="6">
             <div className="social__links d-flex align-items-center gap-4 justify-content-end">
               <p className="m-0">Follow: </p>
               <span>
-                {" "}
-                <Link to="https://www.facebook.com/muhib160">
-                  <i class="ri-facebook-line"></i>
-                </Link>{" "}
+                <i class="ri-facebook-line"></i>
               </span>
 
               <span>
-                <Link to="https://github.com/muhib160">
-                  <i class="ri-github-line"></i>
-                </Link>
+                <i class="ri-github-line"></i>
               </span>
 
               <span>
-                {" "}
-                <Link to=" https://www.youtube.com/c/MuhibsTechDiary">
-                  <i class="ri-youtube-line"></i>
-                </Link>{" "}
+                <i class="ri-youtube-line"></i>
               </span>
 
               <span>
-                {" "}
-                <Link to=" https://www.linkedin.com/in/muhib160/">
-                  <i class="ri-linkedin-line"></i>
-                </Link>{" "}
+                <i class="ri-linkedin-line"></i>
               </span>
             </div>
           </Col>

@@ -100,7 +100,7 @@ const Home = () => {
               <div className="hero__content  ">
                 <h5 className="mb-3">Easy way to make an order</h5>
                 <h1 className="mb-4 hero__title">
-                  <span>HUNGRY?</span> Just wait <br /> food at
+                  <span>HUNGRY?</span> Just wait for <br /> food at
                   <span> your door</span>
                 </h1>
 
@@ -111,7 +111,9 @@ const Home = () => {
 
                 <div className="hero__btns d-flex align-items-center gap-5 mt-4">
                   <button className="order__btn d-flex align-items-center justify-content-between">
-                    Order now <i class="ri-arrow-right-s-line"></i>
+                    <Link to="/foods">
+                      Order now <i class="ri-arrow-right-s-line"></i>
+                    </Link>
                   </button>
 
                   <button className="all__foods-btn">
@@ -254,7 +256,7 @@ const Home = () => {
             <Col lg="6" md="6">
               <div className="why__tasty-treat">
                 <h2 className="tasty__treat-title mb-4">
-                  Why <span>Tasty Treat?</span>
+                  Why <span>Snack Break?</span>
                 </h2>
                 <p className="tasty__treat-desc">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.

@@ -1,12 +1,9 @@
 import React, { useRef, useEffect } from "react";
-
 import { Container } from "reactstrap";
-import logo from "../../assets/images/res-logo.png";
+import logo from "../../assets/images/snack.png";
 import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
-
 import "../../styles/header.css";
 
 const nav__links = [
@@ -21,10 +18,6 @@ const nav__links = [
   {
     display: "Cart",
     path: "/cart",
-  },
-  {
-    display: "Contact",
-    path: "/contact",
   },
 ];
 
@@ -61,7 +54,6 @@ const Header = () => {
         <div className="nav__wrapper d-flex align-items-center justify-content-between">
           <div className="logo">
             <img src={logo} alt="logo" />
-            <h5>Tasty Treat</h5>
           </div>
 
           {/* ======= menu ======= */}
