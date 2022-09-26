@@ -1,17 +1,74 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import logo from "../assets/images/snack.png";
+import { Form } from "react-bootstrap";
+import { auth, db, googleProvider } from "../firebase";
+import * as actionUser from "../store/actions/actionUser";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const Login = () => {
-  const loginNameRef = useRef();
-  const loginPasswordRef = useRef();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  //Validation
+  const [invalidUser, setInvalidUser] = useState(false);
+
+  const [userList] = useCollection(db.collection("users"));
+  const { loginUser } = bindActionCreators(actionUser, useDispatch());
+  const [user] = useAuthState(auth);
+  const navigate = useNavigate();
+  const activeUser = useSelector((state) => state.activeUser);
+
+  useEffect(() => {
+    if (user || activeUser.email) {
+      navigate("/");
+    }
+  });
+
+  const checkIfValid = () => {
+    let isValid = false;
+
+    //Check if there's no user created
+    if (userList.docs.length === 0) {
+      setInvalidUser(true);
+      return false;
+    }
+
+    //Check if user exist
+    userList.docs.forEach((user) => {
+      if (user.data().email === email && user.data().password === password) {
+        setInvalidUser(false);
+        isValid = true;
+      } else {
+        setInvalidUser(true);
+      }
+    });
+
+    //return statement
+    return isValid;
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (checkIfValid()) {
+      console.log("VALID LOGIN");
+      loginUser({ email });
+    }
+  };
+
+  const googleSignIn = (e) => {
+    e.preventDefault();
+    auth.signInWithPopup(googleProvider).catch((error) => alert(error.message));
+  };
+
+  console.log(user);
+
 
   return (
     <Helmet title="Login">
@@ -19,33 +76,51 @@ const Login = () => {
         <Container>
           <Row>
             <Col lg="8" md="8" sm="10" className="m-auto text-center">
-              <form className="form mb-5 br-3" onSubmit={submitHandler}>
+                <Form className="form mb-5 br-3" onSubmit={handleSubmit}>
                 <div className="pb-5 banner">
                   <img src={logo} alt="Burgers and Fries" />
                 </div>
                 <div className="p-2">
                   <h4>Login to your account</h4>
                 </div>
-                <div className="form__group pt-4">
-                  <input
+                <button className="btn bg-white" onClick={googleSignIn}><i class="ri-google-fill"></i><span className="pb-3">Login with Google</span></button>
+                <Form.Group className="mb-4" controlId="formEmail">
+                  <Form.Label className="w-100 text-start">Email:</Form.Label>
+                  <Form.Control
                     type="email"
-                    placeholder="Enter your email:"
-                    required
-                    ref={loginNameRef}
-                  />
-                </div>
-                <div className="form__group pb-4">
-                  <input
+                    size="sm"
+                    className="form-control"
+                    placeholder="Enter your Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    isInvalid={invalidUser}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Invalid User
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-4" controlId="formPassword">
+                  <Form.Label className="w-100 text-start">Password:</Form.Label>
+                  <Form.Control
                     type="password"
-                    placeholder="Enter your password:"
-                    required
-                    ref={loginPasswordRef}
-                  />
-                </div>
+                    size="sm"
+                    className="form__group"
+                    placeholder="Enter Your Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    isInvalid={invalidUser}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Invalid User
+                  </Form.Control.Feedback>
+                </Form.Group>
+              
+              
                 <button type="submit" className="addTOCart__btn">
                   Login
                 </button>
-              </form>
+              </Form>
               <span>
                 Don't have an account?{" "}
                 <Link to="/register">Create an account</Link>

@@ -1,10 +1,15 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Container } from "reactstrap";
 import logo from "../../assets/images/snack.png";
 import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
 import "../../styles/header.css";
+import { bindActionCreators } from "redux";
+import * as actionUser from "../../store/actions/actionUser";
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../../firebase";
+import Spinner from "react-spinkit";
 
 const nav__links = [
   {
@@ -22,10 +27,14 @@ const nav__links = [
 ];
 
 const Header = () => {
+  const [loading, setLoading] = useState(false);
   const menuRef = useRef(null);
   const headerRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const dispatch = useDispatch();
+  const { logoutUser } = bindActionCreators(actionUser, useDispatch());
+  const activeUser = useSelector((state) => state.activeUser);
+  const navigate = useNavigate();
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
 
@@ -47,6 +56,26 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll");
   }, []);
+
+  const logout = (e) => {
+    e.preventDefault();
+    auth.signOut();
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      logoutUser();
+      navigate("/login");
+    }, 3000);
+  };
+
+  if (loading) {
+    return (
+      <div className="m-5">
+        <Spinner name="ball-spin-fade-loader" color="blue" fadeIn="none" />
+      </div>
+    );
+  }
 
   return (
     <header className="header" ref={headerRef}>
@@ -87,6 +116,9 @@ const Header = () => {
                 <i class="ri-user-line"></i>
               </Link>
             </span>
+
+                <span onClick={logout}><i class="ri-logout-circle-r-line"></i></span>
+
 
             <span className="mobile__menu" onClick={toggleMenu}>
               <i class="ri-menu-line"></i>
