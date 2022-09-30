@@ -1,23 +1,24 @@
-import firebase from 'firebase/compat/app'
+import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCLKTYYUs_B8I2RjEctPGC72cMEX1qKFgU",
-    authDomain: "pizza-resto.firebaseapp.com",
-    projectId: "pizza-resto",
-    storageBucket: "pizza-resto.appspot.com",
-    messagingSenderId: "1027031119879",
-    appId: "1:1027031119879:web:97a75420556bcfb27ad2a2"
-  };
+  apiKey: "AIzaSyDHJhWbRM6yrWKw_WkI49eAF8ys7_F1JxI",
+  authDomain: "online-food-delivery-7f0a4.firebaseapp.com",
+  projectId: "online-food-delivery-7f0a4",
+  storageBucket: "online-food-delivery-7f0a4.appspot.com",
+  messagingSenderId: "738341468743",
+  appId: "1:738341468743:web:0b50b8193c4adf90db4f62"
+};
 
-  // Initialize Firebase
+// Use this to initialize the firebase app
 const firebaseapp = firebase.initializeApp(firebaseConfig);
 
-//Use for db
+// Use for db
 const db = firebaseapp.firestore()
-const auth = firebase.auth()
-const googleProvider = new firebase.auth.GoogleAuthProvider()
+const auth = firebase.auth();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export { db, auth, googleProvider} 
+export { db, auth, googleProvider } 
+  

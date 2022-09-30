@@ -6,10 +6,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { cartActions } from "../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const activeUser = useSelector((state) => state.activeUser);
+  const [user] = useAuthState(auth);
+
   return (
     <Helmet title="Cart">
       <CommonSection title="Your Cart" />
@@ -48,9 +53,16 @@ const Cart = () => {
                   <button className="addTOCart__btn me-4">
                     <Link to="/foods">Continue Shopping</Link>
                   </button>
+                  
+                {user || activeUser.email ? (
                   <button className="addTOCart__btn">
-                    <Link to="/checkout">Proceed to checkout</Link>
+                  <Link to="/checkout">Proceed to checkout</Link>
+                </button>
+                ) : (
+                  <button className="addTOCart__btn">
+                    <Link to="/login">Login to checkout</Link>
                   </button>
+                )}
                 </div>
               </div>
             </Col>

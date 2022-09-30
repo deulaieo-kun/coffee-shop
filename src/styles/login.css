@@ -22,3 +22,21 @@
 button {
     border: 2px solid black;
 }
+
+h6 {
+    display: flex;
+    flex-direction: row;
+    padding-top: 7px;
+}
+h6:before, h6:after{
+    content: "";
+    flex: 1 1;
+    border-bottom: 1px solid;
+    margin: auto;
+}
+h6:before {
+    margin-right: 10px
+}
+h6:after {
+    margin-left: 10px
+}

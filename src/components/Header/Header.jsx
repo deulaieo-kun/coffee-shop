@@ -8,8 +8,9 @@ import "../../styles/header.css";
 import { bindActionCreators } from "redux";
 import * as actionUser from "../../store/actions/actionUser";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../firebase";
+import { auth } from "../../firebase";
 import Spinner from "react-spinkit";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const nav__links = [
   {
@@ -35,6 +36,7 @@ const Header = () => {
   const { logoutUser } = bindActionCreators(actionUser, useDispatch());
   const activeUser = useSelector((state) => state.activeUser);
   const navigate = useNavigate();
+  const [user] = useAuthState(auth);
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
 
@@ -111,13 +113,17 @@ const Header = () => {
               <span className="cart__badge">{totalQuantity}</span>
             </span>
 
-            <span className="user">
+            {user || activeUser.email ? (
+              <span onClick={logout}><i class="ri-logout-circle-r-line"></i></span>              
+            ) : (
+              <span className="user">
               <Link to="/login">
                 <i class="ri-user-line"></i>
               </Link>
             </span>
+            )}
 
-                <span onClick={logout}><i class="ri-logout-circle-r-line"></i></span>
+                
 
 
             <span className="mobile__menu" onClick={toggleMenu}>

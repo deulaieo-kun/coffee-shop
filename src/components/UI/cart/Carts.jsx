@@ -5,11 +5,15 @@ import CartItem from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import { cartUiActions } from "../../../store/shopping-cart/cartUiSlice";
 import "../../../styles/shopping-cart.css";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase";
 
 const Carts = () => {
   const dispatch = useDispatch();
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const activeUser = useSelector((state) => state.activeUser);
+  const [user] = useAuthState(auth);
 
   const toggleCart = () => {
     dispatch(cartUiActions.toggle());
@@ -37,11 +41,19 @@ const Carts = () => {
           <h6>
             Subtotal : <span>${totalAmount}</span>
           </h6>
-          <button>
+          {user || activeUser.email ? (
+            <button>
             <Link to="/checkout" onClick={toggleCart}>
               Checkout
             </Link>
           </button>
+          ) : (
+            <button>
+            <Link to="/login">
+              Login to Checkout
+            </Link>
+          </button>
+          )}
         </div>
       </ListGroup>
     </div>

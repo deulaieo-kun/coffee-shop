@@ -80,15 +80,17 @@ const Login = () => {
                 <div className="pb-5 banner">
                   <img src={logo} alt="Burgers and Fries" />
                 </div>
-                <div className="p-2">
-                  <h4>Login to your account</h4>
+                <div className="pt-2">
+                  <h4 className="pb-3">Login to your account</h4>
+                <button className="btn bg-danger w-50" onClick={googleSignIn}>
+                  <span className="text-white">Login with Google</span>
+                </button>
                 </div>
-                <button className="btn bg-white" onClick={googleSignIn}><i class="ri-google-fill"></i><span className="pb-3">Login with Google</span></button>
+                <h6 className="pt-4">OR</h6>
                 <Form.Group className="mb-4" controlId="formEmail">
                   <Form.Label className="w-100 text-start">Email:</Form.Label>
                   <Form.Control
                     type="email"
-                    size="sm"
                     className="form-control"
                     placeholder="Enter your Email"
                     value={email}
@@ -104,7 +106,6 @@ const Login = () => {
                   <Form.Label className="w-100 text-start">Password:</Form.Label>
                   <Form.Control
                     type="password"
-                    size="sm"
                     className="form__group"
                     placeholder="Enter Your Password"
                     value={password}
@@ -123,7 +124,7 @@ const Login = () => {
               </Form>
               <span>
                 Don't have an account?{" "}
-                <Link to="/register">Create an account</Link>
+                <Link to="/register"><u className="text-danger">Create an account</u></Link>
               </span>
             </Col>
           </Row>
