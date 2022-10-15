@@ -56,10 +56,16 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (checkIfValid()) {
-      console.log("VALID LOGIN");
-      loginUser({ email });
-    }
+
+    loginUser({ email: email, password: password })
+      .then(() => {
+        localStorage.setItem("email", email);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        setInvalidUser(true);
+      });
   };
 
   const googleSignIn = (e) => {

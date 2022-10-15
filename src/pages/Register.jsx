@@ -9,9 +9,11 @@ import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { db, auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useCollection } from "react-firebase-hooks/firestore";
+import * as actionUser from "../store/actions/actionUser";
+import { bindActionCreators } from "redux";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -28,6 +30,7 @@ const Register = () => {
   const [userList] = useCollection(db.collection("users"));
   const [user] = useAuthState(auth);
   const activeUser = useSelector((state) => state.activeUser);
+  const { registerUser } = bindActionCreators(actionUser, useDispatch());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,23 +41,6 @@ const Register = () => {
 
   const checkIfValid = () => {
     let isValid = true;
-    userList?.docs.forEach((doc) => {
-      // Check if username is valid
-      if (doc.data().username === username || !username) {
-        isValid = false;
-        setInvalidUsername(true);
-      } else {
-        setInvalidUsername(false);
-      }
-
-      // Check if email is valid
-      if (doc.data().email === email || !email) {
-        isValid = false;
-        setInvalidEmail(true);
-      } else {
-        setInvalidEmail(false);
-      }
-    });
 
     // Check if password is same with confirmPassword
     if (password !== confirmPassword || !password) {
@@ -71,19 +57,23 @@ const Register = () => {
     e.preventDefault();
 
     if (checkIfValid()) {
-      db.collection("users").add({
-        username: username,
+      // Call Registration API
+      registerUser({
         email: email,
         password: password,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-      setShowModal(true);
+      }).then((response) => {
+        console.log(response, "response");
+        setInvalidEmail(false);
+        setShowModal(true);
+      }).catch((error) => {
+        setInvalidEmail(true);
+        console.log(error, "error");
+      })
     }
   };
 
   const closeRegistration = () => {
     setShowModal(false);
-    setUsername("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
@@ -104,7 +94,7 @@ const Register = () => {
                   <h4>Create an Account</h4>
                 </div>
                 <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-2">
+                {/* <Form.Group className="mb-2">
                   <Form.Label className="w-100 text-start">Username:</Form.Label>
                   <Form.Control
                     type="text"
@@ -117,7 +107,7 @@ const Register = () => {
                   <Form.Control.Feedback type="invalid">
                     Username already exists!
                   </Form.Control.Feedback>
-                </Form.Group>
+                </Form.Group> */}
 
                 <Form.Group className="mb-2">
                 <Form.Label className="w-100 text-start">Email:</Form.Label>

@@ -44,21 +44,6 @@ const Header = () => {
     dispatch(cartUiActions.toggle());
   };
 
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList.add("header__shrink");
-      } else {
-        headerRef.current.classList.remove("header__shrink");
-      }
-    });
-
-    return () => window.removeEventListener("scroll");
-  }, []);
-
   const logout = (e) => {
     e.preventDefault();
     auth.signOut();
@@ -109,16 +94,16 @@ const Header = () => {
           {/* ======== nav right icons ========= */}
           <div className="nav__right d-flex align-items-center gap-4">
             <span className="cart__icon" onClick={toggleCart}>
-              <i class="ri-shopping-basket-line"></i>
+              <i className="ri-shopping-basket-line"></i>
               <span className="cart__badge">{totalQuantity}</span>
             </span>
 
             {user || activeUser.email ? (
-              <span onClick={logout}><i class="ri-logout-circle-r-line"></i></span>              
+              <span onClick={logout}><i className="ri-logout-circle-r-line"></i></span>              
             ) : (
               <span className="user">
               <Link to="/login">
-                <i class="ri-user-line"></i>
+                <i className="ri-user-line"></i>
               </Link>
             </span>
             )}
@@ -127,7 +112,7 @@ const Header = () => {
 
 
             <span className="mobile__menu" onClick={toggleMenu}>
-              <i class="ri-menu-line"></i>
+              <i className="ri-menu-line"></i>
             </span>
           </div>
         </div>
