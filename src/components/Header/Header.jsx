@@ -47,13 +47,12 @@ const Header = () => {
   const logout = (e) => {
     e.preventDefault();
     auth.signOut();
-
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      logoutUser();
+      localStorage.removeItem("email");
       navigate("/login");
-    }, 3000);
+    }, 1000);
   };
 
   if (loading) {

@@ -1,5 +1,4 @@
 import React from "react";
-import firebase from "firebase/compat/app";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
@@ -7,11 +6,10 @@ import "../styles/login.css";
 import logo from "../assets/images/snack.png";
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-import { db, auth } from "../firebase";
+import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useCollection } from "react-firebase-hooks/firestore";
 import * as actionUser from "../store/actions/actionUser";
 import { bindActionCreators } from "redux";
 
@@ -27,10 +25,9 @@ const Register = () => {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
 
-  const [userList] = useCollection(db.collection("users"));
+  const { registerUser } = bindActionCreators(actionUser, useDispatch());
   const [user] = useAuthState(auth);
   const activeUser = useSelector((state) => state.activeUser);
-  const { registerUser } = bindActionCreators(actionUser, useDispatch());
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,12 +1,12 @@
-import { put, post } from '../../utilities/https';
+import { get, put, deleteMethod } from '../../utilities/https';
 
-export const registerUser = (newUserDetails) => {
-    const url = '/user/signup';
+export const getAllProducts = () => {
+    const url = '/product/all';
     return new Promise((resolve, reject) => {
-        const promise = put(url, newUserDetails)
+        const promise = get(url)
         promise.then((response) => {
             resolve({
-                type: 'REGISTER_USER',
+                type: 'SAVE_PRODUCT_LIST',
                 payload: response
             })
         }).catch((error) => {
@@ -15,13 +15,13 @@ export const registerUser = (newUserDetails) => {
     })
 }
 
-export const loginUser = (activeUserDetails) => {
-    const url = '/user/login';
+export const addProduct = (body) => {
+    const url = '/product/add';
     return new Promise((resolve, reject) => {
-        const promise = post(url, activeUserDetails)
+        const promise = put(url, body)
         promise.then((response) => {
             resolve({
-                type: 'LOGIN_USER',
+                type: 'SAVE_PRODUCT_LIST',
                 payload: response
             })
         }).catch((error) => {
@@ -30,17 +30,17 @@ export const loginUser = (activeUserDetails) => {
     })
 }
 
-export const loginUserViaProvider = (email) => {
-    const url = `/user/loginByProvider/${email}`;
+export const deleteProduct = (productId) => {
+    const url = `/product/delete/${productId}`;
     return new Promise((resolve, reject) => {
-        const promise = post(url)
+        const promise = deleteMethod(url);
         promise.then((response) => {
             resolve({
-                type: 'LOGIN_USER',
+                type: 'SAVE_PRODUCT_LIST',
                 payload: response
             })
         }).catch((error) => {
-            reject(error)
+            reject(error);
         })
     })
 }

@@ -7,10 +7,6 @@ import heroImg from "../assets/images/hero.png";
 import "../styles/hero-section.css";
 
 import { Link } from "react-router-dom";
-import { db, auth } from "../firebase.js";
-import { useSelector } from "react-redux";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 import Category from "../components/UI/category/Category.jsx";
 
@@ -33,7 +29,6 @@ import whyImg from "../assets/images/location.png";
 import networkImg from "../assets/images/network.png";
 
 import TestimonialSlider from "../components/UI/slider/TestimonialSlider.jsx";
-import { loginUser } from "../store/actions/actionUser.js";
 
 const featureData = [
   {
@@ -57,23 +52,8 @@ const featureData = [
 const Home = () => {
   const [category, setCategory] = useState("ALL");
   const [allProducts, setAllProducts] = useState(products);
-  const activeUser = useSelector((state) => state.activeUser);
-  const [userList] = useCollection(db.collection("users"));
-  const [user] = useAuthState(auth);
 
   const [hotPizza, setHotPizza] = useState([]);
-
-  useEffect(() => {
-    if (user) {
-      loginUser({ email: user.email });
-    } else if (userList?.docs.length !== 0) {
-      userList?.docs.forEach((doc) => {
-        if (doc.data().email === activeUser.email) {
-          loginUser({ id: doc.id, email: doc.data().email });
-        }
-      });
-    }
-  }, [user, userList, activeUser.email]);
 
   useEffect(() => {
     const filteredPizza = products.filter((item) => item.category === "Pizza");

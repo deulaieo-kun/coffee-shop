@@ -6,12 +6,16 @@ import logger from "redux-logger";
 import promiseMiddleware from "redux-promise-middleware";
 import promise from "redux-promise";
 import thunk from "redux-thunk";
+import productReducer from "./reducers/productReducer";
+import reviewReducer from "./reducers/reviewReducer";
 
 const store = configureStore({
   reducer: {
     cart: cartSlice.reducer,
     cartUi: cartUiSlice.reducer,
     activeUser: userReducer,
+    productList: productReducer,
+    reviewList: reviewReducer
   },
   middleware: [
     thunk,

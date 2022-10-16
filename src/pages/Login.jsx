@@ -5,12 +5,11 @@ import { Link , useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import logo from "../assets/images/snack.png";
 import { Form } from "react-bootstrap";
-import { auth, db, googleProvider } from "../firebase";
+import { auth, googleProvider } from "../firebase";
 import * as actionUser from "../store/actions/actionUser";
 import { bindActionCreators } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection } from "react-firebase-hooks/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,8 +18,7 @@ const Login = () => {
   //Validation
   const [invalidUser, setInvalidUser] = useState(false);
 
-  const [userList] = useCollection(db.collection("users"));
-  const { loginUser } = bindActionCreators(actionUser, useDispatch());
+  const { loginUser, loginUserViaProvider } = bindActionCreators(actionUser, useDispatch());
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
   const activeUser = useSelector((state) => state.activeUser);
@@ -30,29 +28,6 @@ const Login = () => {
       navigate("/");
     }
   });
-
-  const checkIfValid = () => {
-    let isValid = false;
-
-    //Check if there's no user created
-    if (userList.docs.length === 0) {
-      setInvalidUser(true);
-      return false;
-    }
-
-    //Check if user exist
-    userList.docs.forEach((user) => {
-      if (user.data().email === email && user.data().password === password) {
-        setInvalidUser(false);
-        isValid = true;
-      } else {
-        setInvalidUser(true);
-      }
-    });
-
-    //return statement
-    return isValid;
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,11 +45,15 @@ const Login = () => {
 
   const googleSignIn = (e) => {
     e.preventDefault();
-    auth.signInWithPopup(googleProvider).catch((error) => alert(error.message));
+    auth
+      .signInWithPopup(googleProvider)
+      .then((response) => {
+        loginUserViaProvider(response?.additionalUserInfo.profile.email);
+        localStorage.setItem("email", email);
+        navigate("/");
+      })
+      .catch((error) => alert(error.message));
   };
-
-  console.log(user);
-
 
   return (
     <Helmet title="Login">
