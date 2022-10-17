@@ -8,7 +8,7 @@ import { Form } from "react-bootstrap";
 import { auth, googleProvider } from "../firebase";
 import * as actionUser from "../store/actions/actionUser";
 import { bindActionCreators } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const Login = () => {
@@ -21,13 +21,12 @@ const Login = () => {
   const { loginUser, loginUserViaProvider } = bindActionCreators(actionUser, useDispatch());
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
-  const activeUser = useSelector((state) => state.activeUser);
 
   useEffect(() => {
-    if (user || activeUser.email) {
+    if (user || localStorage.email) {
       navigate("/");
     }
-  });
+  }, [localStorage.email]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,16 +1,15 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Container } from "reactstrap";
 import logo from "../../assets/images/snack.png";
 import { NavLink, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
 import "../../styles/header.css";
-import { bindActionCreators } from "redux";
-import * as actionUser from "../../store/actions/actionUser";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 import Spinner from "react-spinkit";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useSelector } from "react-redux";
 
 const nav__links = [
   {
@@ -33,8 +32,6 @@ const Header = () => {
   const headerRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const dispatch = useDispatch();
-  const { logoutUser } = bindActionCreators(actionUser, useDispatch());
-  const activeUser = useSelector((state) => state.activeUser);
   const navigate = useNavigate();
   const [user] = useAuthState(auth);
 
@@ -97,7 +94,7 @@ const Header = () => {
               <span className="cart__badge">{totalQuantity}</span>
             </span>
 
-            {user || activeUser.email ? (
+            {localStorage.email ? (
               <span onClick={logout}><i className="ri-logout-circle-r-line"></i></span>              
             ) : (
               <span className="user">

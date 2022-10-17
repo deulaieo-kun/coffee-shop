@@ -12,7 +12,6 @@ const Carts = () => {
   const dispatch = useDispatch();
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const activeUser = useSelector((state) => state.activeUser);
   const [user] = useAuthState(auth);
 
   const toggleCart = () => {
@@ -41,7 +40,7 @@ const Carts = () => {
           <h6>
             Subtotal : <span>${totalAmount}</span>
           </h6>
-          {user || activeUser.email ? (
+          {user || localStorage.email ? (
             <button>
             <Link to="/checkout" onClick={toggleCart}>
               Checkout

@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as actionUser from "../store/actions/actionUser";
 import { bindActionCreators } from "redux";
@@ -27,11 +27,10 @@ const Register = () => {
 
   const { registerUser } = bindActionCreators(actionUser, useDispatch());
   const [user] = useAuthState(auth);
-  const activeUser = useSelector((state) => state.activeUser);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user || activeUser.email) {
+    if (user || localStorage.email) {
       navigate("/");
     }
   });

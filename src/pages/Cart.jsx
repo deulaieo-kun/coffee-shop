@@ -12,7 +12,6 @@ import { auth } from "../firebase";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const activeUser = useSelector((state) => state.activeUser);
   const [user] = useAuthState(auth);
 
   return (
@@ -54,7 +53,7 @@ const Cart = () => {
                     <Link to="/foods">Continue Shopping</Link>
                   </button>
                   
-                {user || activeUser.email ? (
+                {localStorage.email ? (
                   <button className="addTOCart__btn">
                   <Link to="/checkout">Proceed to checkout</Link>
                 </button>
@@ -89,6 +88,8 @@ const Tr = (props) => {
       <td className="text-center">${price}</td>
       <td className="text-center">{quantity}px</td>
       <td className="text-center cart__item-del">
+      <i className="ri-add-box-fill"></i>
+      <i className="ri-subtract-fill px-3"></i>
         <i className="ri-delete-bin-line" onClick={deleteItem}></i>
       </td>
     </tr>

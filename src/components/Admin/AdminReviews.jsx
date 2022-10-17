@@ -13,7 +13,7 @@ export default function AdminReviews() {
     const [author, setAuthor] = useState("");
     const [description, setDescription] = useState("");
     const reviewList = useSelector((state) => state.reviewList)
-    const {getAllReviews } = bindActionCreators(actionReview, useDispatch());
+    const {getAllReviews, addReview, deleteReview } = bindActionCreators(actionReview, useDispatch());
     
     // Validation
     const [invalidAuthor, setInvalidAuthor] = useState(false);
@@ -25,16 +25,15 @@ export default function AdminReviews() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        checkIfValid();
-        // if(checkIfValid()) {
-        //   const requestBody = {
-        //     blogName: blogName,
-        //     blogAuthor: author,
-        //     description: description,
-        //   };
+       
+        if(checkIfValid()) {
+          const requestBody = {
+            reviewAuthor: author,
+            description: description,
+          };
   
-        //   addBlog(requestBody);
-        // } 
+          addReview(requestBody);
+        } 
     };
   
     const checkIfValid = () => {
@@ -74,11 +73,11 @@ export default function AdminReviews() {
       // Return statement
       return (
         <div className="card h-150 text-center p-4">
-          <img src={review.imageLink ? review.imageLink : empty} alt={review.author} {...getRootProps()}/>
+          <img src={review.imageLink ? review.imageLink : empty} alt={review.reviewAuthor} {...getRootProps()}/>
           <div className="card-body">
             <h5 className="card-title mb-0">{review?.reviewAuthor.substring(0, 12)}...</h5>
-            <p className="card-text lead fw-bold">${review.price}</p>
-            <button>DELETE</button>
+            <p className="card-text lead fw-bold">{review.description}</p>
+            <button onClick={() => deleteReview(review.reviewId)}>DELETE</button>
           </div>
         </div>
       )

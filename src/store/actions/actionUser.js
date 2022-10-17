@@ -22,7 +22,6 @@ export const loginUser = (activeUserDetails) => {
         promise.then((response) => {
             resolve({
                 type: 'LOGIN_USER',
-                payload: response
             })
         }).catch((error) => {
             reject(error)
@@ -37,7 +36,6 @@ export const loginUserViaProvider = (email) => {
         promise.then((response) => {
             resolve({
                 type: 'LOGIN_USER',
-                payload: response
             })
         }).catch((error) => {
             reject(error)
