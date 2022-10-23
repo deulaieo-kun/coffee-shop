@@ -1,20 +1,16 @@
-import Skeleton from "react-loading-skeleton";
+import * as React from "react";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const renderLoading = () => {
   return (
-    <div className="row g-3">
-      <div className="col-md-3">
-        <Skeleton height={350} />
-      </div>
-      <div className="col-md-3">
-        <Skeleton height={350} />
-      </div>
-      <div className="col-md-3">
-        <Skeleton height={350} />
-      </div>
-      <div className="col-md-3">
-        <Skeleton height={350} />
-      </div>
+    <div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

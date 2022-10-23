@@ -1,7 +1,7 @@
 import React from "react";
-import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
-import logo from "../../assets/images/snack.png";
 import "../../styles/footer.css";
+import logo from "../../assets/images/snack.png";
+import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
 
 const Footer = () => {
   return (
@@ -47,7 +47,7 @@ const Footer = () => {
               </ListGroupItem>
 
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <span>Email: snackBreak@gmail.com</span>
+                <span>Email: snackbreak@gmail.com</span>
               </ListGroupItem>
             </ListGroup>
           </Col>

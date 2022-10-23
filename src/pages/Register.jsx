@@ -1,36 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import "../styles/login.css";
+import logo from "../assets/images/snack.png";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
-import "../styles/login.css";
-import logo from "../assets/images/snack.png";
-import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-import { auth } from "../firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import * as actionUser from "../store/actions/actionUser";
 import { bindActionCreators } from "redux";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import * as actionUser from "../store/actions/actionUser";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
-
-  // Validation
-  const [invalidUsername, setInvalidUsername] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
-
   const { registerUser } = bindActionCreators(actionUser, useDispatch());
-  const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user || localStorage.email) {
+    if (localStorage.email) {
       navigate("/");
     }
   });
@@ -51,37 +45,56 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (checkIfValid()) {
       // Call Registration API
       registerUser({
         email: email,
         password: password,
-      }).then((response) => {
-        console.log(response, "response");
-        setInvalidEmail(false);
-        setShowModal(true);
-      }).catch((error) => {
-        setInvalidEmail(true);
-        console.log(error, "error");
       })
+        .then((response) => {
+          console.log(response, "response");
+          setInvalidEmail(false);
+          setLoading(false);
+          setShowModal(true);
+        })
+        .catch((error) => {
+          setInvalidEmail(true);
+          console.log(error, "error");
+        });
     }
   };
 
   const closeRegistration = () => {
-    setShowModal(false);
+    setLoading(true);
+    setShowModal(true);
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    navigate("/login");
+    setLoading(false);
   };
 
+  if (loading) {
+    return (
+      <div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+    );
+  }
 
   return (
     <Helmet title="Signup">
       <section>
         <Container>
           <Row>
-            <Col lg="8" md="8" sm="10" className="m-auto text-center">
+            <Col lg="8" md="8" sm="10" className="m-auto text-center pb-5">
               <div className="form mb-5 br-3">
                 <div className="pb-5 banner">
                   <img src={logo} alt="Burgers and Fries" />
@@ -90,92 +103,86 @@ const Register = () => {
                   <h4>Create an Account</h4>
                 </div>
                 <Form onSubmit={handleSubmit}>
-                {/* <Form.Group className="mb-2">
-                  <Form.Label className="w-100 text-start">Username:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    className="form-control auth-input"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    isInvalid={invalidUsername}
-                  ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    Username already exists!
-                  </Form.Control.Feedback>
-                </Form.Group> */}
+                  <Form.Group className="mb-2">
+                    <Form.Label className="w-100 text-start">Email:</Form.Label>
+                    <Form.Control
+                      type="email"
+                      className="form-control auth-input"
+                      placeholder="Email Address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      isInvalid={invalidEmail}
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      Email already exists!
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group className="mb-2">
-                <Form.Label className="w-100 text-start">Email:</Form.Label>
-                  <Form.Control
-                    type="email"
-                    className="form-control auth-input"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    isInvalid={invalidEmail}
-                  ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    Email already exists!
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label className="w-100 text-start">
+                      Password:
+                    </Form.Label>
+                    <Form.Control
+                      type="password"
+                      className="form-control auth-input"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      isInvalid={invalidPassword}
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      The password confirmation does not match
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group className="mb-2">
-                <Form.Label className="w-100 text-start">Password:</Form.Label>
-                  <Form.Control
-                    type="password"
-                    className="form-control auth-input"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    isInvalid={invalidPassword}
-                  ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    The password confirmation does not match
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Label className="w-100 text-start">
+                      Confirm Password:
+                    </Form.Label>
+                    <Form.Control
+                      type="password"
+                      className="form-control auth-input"
+                      placeholder="Confirm Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      isInvalid={invalidPassword}
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      The password confirmation does not match
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group className="mb-4">
-                <Form.Label className="w-100 text-start">Confirm Password:</Form.Label>
-                  <Form.Control
-                    type="password"
-                    className="form-control auth-input"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    isInvalid={invalidPassword}
-                  ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    The password confirmation does not match
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Modal show={showModal}>
+                    <Modal.Header className="addTOCart__btn">
+                      <Modal.Title className="text-white">
+                        Congratulations!
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="text-dark text-center">
+                      Successful Registration! <br />
+                      You may now login with your new account.
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <button
+                        variant="secondary"
+                        className="addTOCart__btn"
+                        onClick={() => closeRegistration()}
+                      >
+                        Close
+                      </button>
+                    </Modal.Footer>
+                  </Modal>
 
-                <Modal show={showModal}>
-                  <Modal.Header>
-                    <Modal.Title className="text-dark">
-                      Congratulation!
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body className="text-dark">
-                    Successful Registration!
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <button
-                      variant="secondary"
-                      onClick={() => closeRegistration()}
-                    >
-                      Close
-                    </button>
-                  </Modal.Footer>
-                </Modal>
-
-                <button type="submit" className="addTOCart__btn">
-                  Sign Up
-                </button>
-              </Form>
+                  <button type="submit" className="addTOCart__btn">
+                    Sign Up
+                  </button>
+                </Form>
               </div>
               <span>
-                Already have an account? <Link to="/login"><u className="text-danger">Login</u></Link>
+                Already have an account?{" "}
+                <Link to="/login">
+                  <u className="text-danger">Login</u>
+                </Link>
               </span>
             </Col>
           </Row>

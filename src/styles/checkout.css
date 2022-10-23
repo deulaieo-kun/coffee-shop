@@ -1,18 +1,21 @@
-.checkout__bill {
-  background: #fde4e4;
-  padding: 30px;
+.bg-red {
+  background-color: #df2020;
 }
 
-.checkout__total {
-  border-top: 1px solid #ddd;
-  padding-top: 30px;
+.cartImage {
+  overflow: hidden;
+  border: 1px solid rgb(231, 222, 222);
+  flex: 20%;
+  margin-right: 15px;
 }
 
-@media only screen and (max-width: 768px) {
-  .checkout__bill h6 {
-    font-size: 0.9rem;
-  }
-  .checkout__bill {
-    margin-top: 40px;
-  }
+.cartImage img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+
+.checkout-logo {
+  width: 70px;
+  filter: invert(100%);
 }

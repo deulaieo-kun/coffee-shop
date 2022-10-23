@@ -1,13 +1,13 @@
-import { get, put, deleteMethod } from "../../utilities/https";
+import { get, put, post, deleteMethod } from "../../utilities/https";
 
-export const getAllProducts = () => {
-  const url = "/product/all";
+export const getAllProductsByUser = (email) => {
+  const url = `/cart/getProductByUser/${email}`;
   return new Promise((resolve, reject) => {
     const promise = get(url);
     promise
       .then((response) => {
         resolve({
-          type: "SAVE_PRODUCT_LIST",
+          type: "SAVE_CART_PRODUCTS",
           payload: response,
         });
       })
@@ -17,14 +17,14 @@ export const getAllProducts = () => {
   });
 };
 
-export const getProduct = (productId) => {
-  const url = `/product/foods/${productId}`;
+export const addToCart = (email, productId) => {
+  const url = `/cart/${email}/addProduct/${productId}`;
   return new Promise((resolve, reject) => {
-    const promise = get(url);
+    const promise = put(url);
     promise
       .then((response) => {
         resolve({
-          type: "GET_ACTIVE_PRODUCT",
+          type: "SAVE_CART_PRODUCTS",
           payload: response,
         });
       })
@@ -34,14 +34,14 @@ export const getProduct = (productId) => {
   });
 };
 
-export const addProduct = (body) => {
-  const url = "/product/add";
+export const checkOut = (email) => {
+  const url = `/cart/checkout/${email}`;
   return new Promise((resolve, reject) => {
-    const promise = put(url, body);
+    const promise = post(url);
     promise
       .then((response) => {
         resolve({
-          type: "SAVE_PRODUCT_LIST",
+          type: "SAVE_CART_PRODUCTS",
           payload: response,
         });
       })
@@ -51,14 +51,14 @@ export const addProduct = (body) => {
   });
 };
 
-export const deleteProduct = (productId) => {
-  const url = `/product/delete/${productId}`;
+export const deleteCartProduct = (email, productId) => {
+  const url = `/cart/${email}/deleteCartProduct/${productId}`;
   return new Promise((resolve, reject) => {
     const promise = deleteMethod(url);
     promise
       .then((response) => {
         resolve({
-          type: "SAVE_PRODUCT_LIST",
+          type: "SAVE_CART_PRODUCTS",
           payload: response,
         });
       })

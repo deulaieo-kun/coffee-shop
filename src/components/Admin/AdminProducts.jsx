@@ -1,25 +1,35 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import { Form } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useState, useEffect, useCallback } from "react";
+import "../../styles/all-foods.css";
+import empty from "../../assets/images/empty-image.jpg";
+import { Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import axios from "axios";
 import * as actionProduct from "../../store/actions/actionProduct";
-import { useDropzone } from 'react-dropzone';
-import { useCallback } from 'react';
-import empty from "../../assets/images/empty-image.jpg"
+import { useDropzone } from "react-dropzone";
+import {
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBCol,
+  MDBIcon,
+  MDBRow,
+  MDBTypography,
+} from "mdb-react-ui-kit";
 
 export default function AdminProducts() {
   const [productTitle, setProductTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("burger");
+  const [category, setCategory] = useState("Burger");
   const [description, setDescription] = useState("");
-  const { getAllProducts, addProduct, deleteProduct } = bindActionCreators(actionProduct, useDispatch());
-  const productList = useSelector((state) => state.productList)
-
-  // Validation
   const [invalidProductTitle, setInvalidProductTitle] = useState(false);
   const [invalidPrice, setInvalidPrice] = useState(false);
   const [invalidDescription, setInvalidDescription] = useState(false);
+  const { getAllProducts, addProduct, deleteProduct } = bindActionCreators(
+    actionProduct,
+    useDispatch()
+  );
+  const productList = useSelector((state) => state.productList);
 
   useEffect(() => {
     getAllProducts();
@@ -27,7 +37,6 @@ export default function AdminProducts() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (checkIfValid()) {
       const requestBody = {
         productTitle: productTitle,
@@ -35,16 +44,18 @@ export default function AdminProducts() {
         category: category,
         description: description,
       };
-
       addProduct(requestBody);
+      setProductTitle("");
+      setPrice("");
+      setDescription("");
     }
-  }
+  };
 
   const checkIfValid = () => {
     let isValid = true;
 
     // Check if productName is valid
-    if(productTitle.match("^$|^.*@.*\..*$")) {
+    if (productTitle.match("^$|^.*@.*..*$")) {
       setInvalidProductTitle(true);
       isValid = false;
     } else {
@@ -52,7 +63,7 @@ export default function AdminProducts() {
     }
 
     // Check if price has value
-    if(price.match("^$|^.*@.*\..*$") || isNaN(price) || price <= 0) {
+    if (price.match("^$|^.*@.*..*$") || isNaN(price) || price <= 0) {
       setInvalidPrice(true);
       isValid = false;
     } else {
@@ -60,23 +71,42 @@ export default function AdminProducts() {
     }
 
     // Check if description has an input
-    if(description.match("^$|^.*@.*\..*$")) {
+    if (description.match("^$|^.*@.*..*$")) {
       setInvalidDescription(true);
       isValid = false;
     } else {
       setInvalidDescription(false);
     }
 
-    return isValid
+    return isValid;
   };
 
   function MyDropzone(product) {
     // Callback function
     const onDrop = useCallback((acceptedFiles) => {
-      const file = acceptedFiles[0]
+      const file = acceptedFiles[0];
 
-      const formData  = new FormData();
+      const formData = new FormData();
       formData.append("file", file);
+
+      // Upload Image
+      axios
+        .put(
+          `https://snackbreak.herokuapp.com/product/${product.productId}/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          console.log("file uploaded successfully");
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }, []);
 
     // React Dropzone
@@ -84,57 +114,84 @@ export default function AdminProducts() {
 
     // Return statement
     return (
-      <div className="card h-150 text-center p-4">
-        <img src={product.imageLinkOne ? product.imageLinkOne : empty} alt={product.productTitle} {...getRootProps()}/>
-        {/* <img src={product.imageLinkTwo ? product.imageLinkTwo : empty} alt={product.productTitle} {...getRootProps()}/>
-        <img src={product.imageLinkThree ? product.imageLinkThree : empty} alt={product.productTitle} {...getRootProps()}/> */}
-        <div className="card-body">
-          <h5 className="card-title mb-0">{product?.productTitle.substring(0, 12)}...</h5>
-          <p className="card-text lead fw-bold">${product.price}</p>
-          <button onClick={() => deleteProduct(product.productId)}>DELETE</button>
-        </div>
-      </div>
-    )
-  }
+      <MDBCard
+        className="rounded-3 mb-4 border border-danger"
+        key={product.productId}
+      >
+        <MDBCardBody className="p-4">
+          <MDBRow className="justify-content-between align-items-center">
+            <MDBCol md="1" lg="1" xl="1">
+              <MDBCardImage
+                className="rounded-3"
+                fluid
+                src={
+                  product.imageLinkOne
+                    ? `https://snackbreak.herokuapp.com/product/${product.productId}/download`
+                    : empty
+                }
+                alt={product.productTitle}
+                {...getRootProps()}
+              />
+            </MDBCol>
+            <MDBCol md="3" lg="3" xl="3">
+              <p className="lead fw-normal mb-2 text-red fw-bold">
+                {product.productTitle}
+              </p>
+            </MDBCol>
 
+            <MDBCol md="3" lg="2" xl="2" className="offset-lg-1">
+              <MDBTypography tag="h5" className="mb-0 text-red fw-bold">
+                ₱ {product.price}
+              </MDBTypography>
+            </MDBCol>
+            <MDBCol md="1" lg="1" xl="1" className="text-end">
+              <MDBIcon
+                fas
+                icon="trash text-red"
+                size="lg"
+                onClick={() => deleteProduct(product.productId)}
+              />
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    );
+  }
 
   const renderProducts = (category) => {
     return (
       <>
-      {productList
-      .filter((product) => product.category === category)
-      .map((product) => (
-        <React.Fragment key={product.productId}>
-          <div className="col-md-8 mb-4" style={{ height: "300px", width: "250px" }}>
-            <MyDropzone {...product} />
-          </div>
-        </React.Fragment>
-      ))
-      }</>
-    )
-  }
+        {productList
+          .filter((product) => product.category === category)
+          .map((product) => (
+            <React.Fragment key={product.productId}>
+              <div>
+                <MyDropzone {...product} />
+              </div>
+            </React.Fragment>
+          ))}
+      </>
+    );
+  };
 
   return (
     <>
-    <hr />
-    <Form onSubmit={handleSubmit} className="row">
-        {/* PRODUCT TITLE */}
+      <Form onSubmit={handleSubmit} className="row">
         <Form.Group controlId="formProductName" className="w-50">
-            <Form.Control 
-            type="text" 
-            size="sm" 
-            placeholder="Enter Product Name" 
-            value={productTitle} 
-            onChange={(e) => setProductTitle(e.target.value)} 
-            isInvalid={invalidProductTitle}>
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              Please input a product name
-            </Form.Control.Feedback>
+          <Form.Control
+            type="text"
+            size="sm"
+            placeholder="Enter Product Name"
+            value={productTitle}
+            onChange={(e) => setProductTitle(e.target.value)}
+            isInvalid={invalidProductTitle}
+          ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please input a product name
+          </Form.Control.Feedback>
         </Form.Group>
 
-         {/* PRODUCT PRICE */}
-         <Form.Group controlId="formPrice" className="w-50">
+        <Form.Group controlId="formPrice" className="w-50">
           <Form.Control
             type="text"
             size="sm"
@@ -148,19 +205,17 @@ export default function AdminProducts() {
           </Form.Control.Feedback>
         </Form.Group>
 
-        {/* CATEGORY */}
         <Form.Group controlId="formType" className="w-50">
           <Form.Select
             aria-label="Default select example"
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="burger">Burgers</option>
-            <option value="pizza">Pizzas</option>
-            <option value="dessert">Desserts</option>
+            <option value="Burger">Burgers</option>
+            <option value="Pizza">Pizzas</option>
+            <option value="Dessert">Desserts</option>
           </Form.Select>
         </Form.Group>
 
-        {/* DESCRIPTION */}
         <Form.Group className="mb-3" controlId="formDescription">
           <Form.Control
             as="textarea"
@@ -177,26 +232,29 @@ export default function AdminProducts() {
 
         <div className="col-12 d-flex flex-wrap justify-content-center">
           <button
-            className="bg-primary text-center text-white w-50"
+            className="addTOCart__btn text-center text-white w-50"
             onClick={handleSubmit}
           >
             Upload
           </button>
         </div>
-    </Form>
-    <hr />
-    <h4 className="text-danger">BURGERS</h4>
-    <div className="row justify-content-center">
-      {renderProducts("burger")}
-    </div>
-    <h4 className="text-danger">PIZZAS</h4>
-    <div className="row justify-content-center">
-      {renderProducts("pizza")}
-    </div>
-    <h4 className="text-danger">DESSERTS</h4>
-    <div className="row justify-content-center">
-      {renderProducts("dessert")}
-    </div>
+      </Form>
+      <br />
+      <h3 className="text-start fw-bold text-red pt-5 pb-2">
+        Uploaded Products
+      </h3>
+      <h4 className="text-red">BURGERS</h4>
+      <div className="row justify-content-center">
+        {renderProducts("Burger")}
+      </div>
+      <h4 className="text-red">PIZZAS</h4>
+      <div className="row justify-content-center">
+        {renderProducts("Pizza")}
+      </div>
+      <h4 className="text-red">DESSERTS</h4>
+      <div className="row justify-content-center">
+        {renderProducts("Dessert")}
+      </div>
     </>
-  )
+  );
 }

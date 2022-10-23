@@ -1,15 +1,16 @@
-import React, { useRef, useState } from "react";
-import { Container } from "reactstrap";
-import logo from "../../assets/images/snack.png";
-import { NavLink, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
+import React, { useRef, useState, useEffect } from "react";
 import "../../styles/header.css";
-import { useNavigate } from "react-router-dom";
+import logo from "../../assets/images/snack.png";
+import { Container } from "reactstrap";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { auth } from "../../firebase";
-import Spinner from "react-spinkit";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import { Modal } from "react-bootstrap";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import * as actionCart from "../../store/actions/actionCart";
 
 const nav__links = [
   {
@@ -21,25 +22,33 @@ const nav__links = [
     path: "/foods",
   },
   {
-    display: "Cart",
-    path: "/cart",
+    display: "About Us",
+    path: "/aboutUs",
   },
 ];
 
 const Header = () => {
   const [loading, setLoading] = useState(false);
+  const [cartProducts, setCartProducts] = useState([]);
+  const [showLogin, setShowLogin] = useState(false);
   const menuRef = useRef(null);
   const headerRef = useRef(null);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user] = useAuthState(auth);
+  const { getAllProductsByUser } = bindActionCreators(
+    actionCart,
+    useDispatch()
+  );
+
+  useEffect(() => {
+    if (localStorage.email) {
+      getAllProductsByUser(localStorage.email).then((response) => {
+        setCartProducts(response.payload);
+      });
+    }
+  }, []);
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
-
-  const toggleCart = () => {
-    dispatch(cartUiActions.toggle());
-  };
 
   const logout = (e) => {
     e.preventDefault();
@@ -48,17 +57,29 @@ const Header = () => {
     setTimeout(() => {
       setLoading(false);
       localStorage.removeItem("email");
+      setCartProducts([]);
       navigate("/login");
     }, 1000);
   };
 
   if (loading) {
     return (
-      <div className="m-5">
-        <Spinner name="ball-spin-fade-loader" color="blue" fadeIn="none" />
+      <div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     );
   }
+
+  const closeShowLogin = (e) => {
+    e.preventDefault();
+    setShowLogin(false);
+    navigate("/login");
+  };
 
   return (
     <header className="header" ref={headerRef}>
@@ -70,7 +91,6 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* ======= menu ======= */}
           <div className="navigation" ref={menuRef} onClick={toggleMenu}>
             <div className="menu d-flex align-items-center gap-5">
               {nav__links.map((item, index) => (
@@ -87,25 +107,56 @@ const Header = () => {
             </div>
           </div>
 
-          {/* ======== nav right icons ========= */}
           <div className="nav__right d-flex align-items-center gap-4">
-            <span className="cart__icon" onClick={toggleCart}>
-              <i className="ri-shopping-basket-line"></i>
-              <span className="cart__badge">{totalQuantity}</span>
+            <span className="cart__icon">
+              <Link to="/checkout">
+                <i
+                  className="ri-shopping-basket-line"
+                  onClick={!localStorage.email ? () => setShowLogin(true) : ""}
+                ></i>
+              </Link>
+              <span className="cart__badge">
+                {cartProducts ? cartProducts?.length : 0}
+              </span>
             </span>
+
+            <Modal show={showLogin}>
+              <Modal.Header className="addTOCart__btn">
+                <Modal.Title className="text-white">Oops!</Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="text-dark">
+                Please login to continue adding to cart and checking out.
+              </Modal.Body>
+              <Modal.Footer>
+                <button
+                  variant="secondary"
+                  className="addTOCart__btn"
+                  onClick={closeShowLogin}
+                >
+                  Close
+                </button>
+              </Modal.Footer>
+            </Modal>
 
             {localStorage.email ? (
-              <span onClick={logout}><i className="ri-logout-circle-r-line"></i></span>              
+              <span onClick={logout}>
+                <i className="ri-logout-circle-r-line"></i>
+              </span>
             ) : (
               <span className="user">
-              <Link to="/login">
-                <i className="ri-user-line"></i>
-              </Link>
-            </span>
+                <Link to="/login">
+                  <i className="ri-user-line"></i>
+                </Link>
+              </span>
             )}
 
-                
-
+            {localStorage.email === "admin@gmail.com" ? (
+              <Link to="/admin">
+                <i className="ri-settings-3-line text-dark"></i>
+              </Link>
+            ) : (
+              <div className="d-none"></div>
+            )}
 
             <span className="mobile__menu" onClick={toggleMenu}>
               <i className="ri-menu-line"></i>

@@ -6,6 +6,7 @@ import "remixicon/fonts/remixicon.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./index.css";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import store from "./store/store";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";

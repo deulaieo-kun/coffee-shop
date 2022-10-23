@@ -1,120 +1,435 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { Container, Row, Col } from "reactstrap";
+import React, { useState, useEffect } from "react";
+import "../styles/checkout.css";
+import empty from "../assets/images/empty-image.jpg";
+import logo from "../assets/images/snack.png";
 import CommonSection from "../components/UI/common-section/CommonSection";
 import Helmet from "../components/Helmet/Helmet";
-import "../styles/checkout.css";
+import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import * as actionCart from "../store/actions/actionCart";
+import {
+  MDBBtn,
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBCol,
+  MDBContainer,
+  MDBIcon,
+  MDBInput,
+  MDBRow,
+  MDBTypography,
+} from "mdb-react-ui-kit";
 
 const Checkout = () => {
-  const [enterName, setEnterName] = useState("");
-  const [enterEmail, setEnterEmail] = useState("");
-  const [enterNumber, setEnterNumber] = useState("");
-  const [enterCountry, setEnterCountry] = useState("");
-  const [enterCity, setEnterCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [total, setTotal] = useState(0);
+  const [cartProducts, setCartProducts] = useState([]);
+  const [showModalOne, setShowModalOne] = useState(false);
+  const [showModalTwo, setShowModalTwo] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const activeUser = localStorage;
+  const { getAllProductsByUser, checkOut, deleteCartProduct } =
+    bindActionCreators(actionCart, useDispatch());
+  const navigate = useNavigate();
 
-  const shippingInfo = [];
-  const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
-  const shippingCost = 30;
+  useEffect(() => {
+    if (!activeUser.email) {
+      navigate("/login");
+    }
+  });
 
-  const totalAmount = cartTotalAmount + Number(shippingCost);
+  useEffect(() => {
+    setLoading(true);
+    if (localStorage.email) {
+      getAllProductsByUser(activeUser.email).then((response) => {
+        setCartProducts(response.payload);
+        setLoading(false);
+      });
+    }
+  }, []);
 
-  const submitHandler = (e) => {
+  useEffect(() => {
+    let value = 0;
+    cartProducts?.forEach((product) => {
+      const productValue =
+        product.price * (product.quantity ? product.quantity : 1);
+      value = value + productValue;
+    });
+    setTotal(value);
+  }, [cartProducts]);
+
+  const cartCheckOut = (e) => {
     e.preventDefault();
-    const userShippingAddress = {
-      name: enterName,
-      email: enterEmail,
-      phone: enterNumber,
-      country: enterCountry,
-      city: enterCity,
-      postalCode: postalCode,
-    };
+    if (total == "0") {
+      setShowModalTwo(true);
+    } else {
+      setShowModalOne(true);
+    }
+    checkOut(activeUser.email).then((response) => {
+      setCartProducts(response.payload);
+    });
+  };
 
-    shippingInfo.push(userShippingAddress);
-    console.log(shippingInfo);
+  const deleteProduct = (productId) => {
+    setLoading(true);
+    if (localStorage.email) {
+      deleteCartProduct(localStorage.email, productId).then((response) => {
+        setCartProducts(response.payload);
+      });
+      setLoading(false);
+      setShowDeleteModal(true);
+    }
+  };
+
+  const closeModalOne = (e) => {
+    e.preventDefault();
+    setShowModalOne(false);
+    navigate("/");
+    window.location.reload();
+  };
+
+  const closeModalTwo = (e) => {
+    e.preventDefault();
+    setShowModalTwo(false);
+  };
+
+  const closeDeleteModal = (e) => {
+    e.preventDefault();
+    setShowDeleteModal(false);
+    window.location.reload();
+  };
+
+  const renderLoading = () => {
+    return (
+      <div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+    );
+  };
+
+  const setQuantity = (productId, quantity) => {
+    const newProductList = [];
+
+    cartProducts.forEach((data) => {
+      if (productId === data.productId) {
+        newProductList.push({
+          productId: data.productId,
+          productTitle: data.productTitle,
+          imageLinkOne: data.imageLinkOne,
+          price: data.price,
+          category: data.category,
+          quantity: quantity,
+        });
+      } else {
+        newProductList.push(data);
+      }
+    });
+
+    setCartProducts(newProductList);
   };
 
   return (
     <Helmet title="Checkout">
-      <CommonSection title="Checkout" />
-      <section>
-        <Container>
-          <Row>
-            <Col lg="8" md="6">
-              <h6 className="mb-4">Shipping Address</h6>
-              <form className="checkout__form" onSubmit={submitHandler}>
-                <div className="form__group">
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    required
-                    onChange={(e) => setEnterName(e.target.value)}
-                  />
-                </div>
+      <CommonSection title="Cart" />
+      <section className="h-100 h-custom bg-light">
+        <MDBContainer className="py-3 h-100">
+          <MDBRow className="justify-content-center align-items-center h-100">
+            <MDBCol>
+              <MDBCard>
+                <MDBCardBody className="p-4">
+                  <MDBRow>
+                    <MDBCol lg="7">
+                      <MDBTypography tag="h5">
+                        <Link to="/foods" className="text-body">
+                          <MDBIcon fas icon="long-arrow-alt-left me-2" />{" "}
+                          Continue shopping
+                        </Link>
+                      </MDBTypography>
 
-                <div className="form__group">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    required
-                    onChange={(e) => setEnterEmail(e.target.value)}
-                  />
-                </div>
-                <div className="form__group">
-                  <input
-                    type="number"
-                    placeholder="Phone number"
-                    required
-                    onChange={(e) => setEnterNumber(e.target.value)}
-                  />
-                </div>
-                <div className="form__group">
-                  <input
-                    type="text"
-                    placeholder="Country"
-                    required
-                    onChange={(e) => setEnterCountry(e.target.value)}
-                  />
-                </div>
-                <div className="form__group">
-                  <input
-                    type="text"
-                    placeholder="City"
-                    required
-                    onChange={(e) => setEnterCity(e.target.value)}
-                  />
-                </div>
-                <div className="form__group">
-                  <input
-                    type="number"
-                    placeholder="Postal code"
-                    required
-                    onChange={(e) => setPostalCode(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="addTOCart__btn">
-                  Payment
-                </button>
-              </form>
-            </Col>
+                      <hr />
 
-            <Col lg="4" md="6">
-              <div className="checkout__bill">
-                <h6 className="d-flex align-items-center justify-content-between mb-3">
-                  Subtotal: <span>${cartTotalAmount}</span>
-                </h6>
-                <h6 className="d-flex align-items-center justify-content-between mb-3">
-                  Shipping: <span>${shippingCost}</span>
-                </h6>
-                <div className="checkout__total">
-                  <h5 className="d-flex align-items-center justify-content-between">
-                    Total: <span>${totalAmount}</span>
-                  </h5>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Container>
+                      <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                          <p className="mb-1">Shopping cart</p>
+                          <p className="mb-0">
+                            You have {cartProducts?.length} items in your cart
+                          </p>
+                        </div>
+                      </div>
+
+                      {cartProducts?.map((product) => (
+                        <MDBCard className="mb-3" key={product.productId}>
+                          <MDBCardBody>
+                            <div className="d-flex justify-content-between">
+                              <div className="d-flex flex-row align-items-center">
+                                <div className="cartImage">
+                                  <img
+                                    src={
+                                      product.imageLinkOne
+                                        ? `https://snackbreak.herokuapp.com/product/${product.productId}/download`
+                                        : empty
+                                    }
+                                    alt={product.productTitle}
+                                  />
+                                </div>
+                                <div className="ms-3">
+                                  <MDBTypography tag="h5">
+                                    {loading
+                                      ? renderLoading()
+                                      : product.productTitle}
+                                  </MDBTypography>
+                                </div>
+                              </div>
+                              <div className="d-flex flex-row align-items-center">
+                                <div className="" style={{ width: "80px" }}>
+                                  <MDBInput
+                                    min={1}
+                                    defaultValue={1}
+                                    type="number"
+                                    size="sm"
+                                    onChange={(e) =>
+                                      setQuantity(
+                                        product.productId,
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </div>
+                                <div style={{ width: "80px" }}>
+                                  <MDBTypography
+                                    tag="h5"
+                                    className="mb-0 text-center"
+                                  >
+                                    ₱ {product.price}
+                                  </MDBTypography>
+                                </div>
+                                <a
+                                  href="#!"
+                                  style={{ color: "#cecece" }}
+                                  onClick={() =>
+                                    deleteProduct(product.productId)
+                                  }
+                                >
+                                  <MDBIcon fas icon="trash-alt" />
+                                </a>
+                              </div>
+                            </div>
+                          </MDBCardBody>
+                        </MDBCard>
+                      ))}
+                    </MDBCol>
+
+                    <MDBCol lg="5">
+                      <MDBCard className="text-white rounded-3">
+                        <MDBCardBody className="bg-red">
+                          <div className="d-flex justify-content-between align-items-center mb-4">
+                            <MDBTypography tag="h5" className="mb-0">
+                              Checkout
+                            </MDBTypography>
+                            <MDBCardImage
+                              src={logo}
+                              fluid
+                              className="rounded-3 checkout-logo"
+                              alt="logo"
+                            />
+                          </div>
+
+                          <form className="mt-4">
+                            <MDBInput
+                              className="mb-4"
+                              label="Name"
+                              type="text"
+                              size="lg"
+                              placeholder="Customer's Name"
+                              contrast
+                            />
+
+                            <MDBInput
+                              className="mb-4"
+                              label="Phone Number"
+                              type="text"
+                              size="lg"
+                              minLength="19"
+                              maxLength="19"
+                              placeholder="Customer's Phone Number"
+                              contrast
+                            />
+
+                            <MDBInput
+                              className="mb-4"
+                              label="Address"
+                              type="text"
+                              size="lg"
+                              placeholder="Customer's Address"
+                              contrast
+                            />
+
+                            <MDBRow className="mb-4">
+                              <MDBCol md="6">
+                                <MDBInput
+                                  className="mb-4"
+                                  label="City"
+                                  type="text"
+                                  size="lg"
+                                  placeholder="Ex. Cebu City"
+                                  contrast
+                                />
+                              </MDBCol>
+                              <MDBCol md="6">
+                                <MDBInput
+                                  className="mb-4"
+                                  label="Postal Code"
+                                  type="text"
+                                  size="lg"
+                                  minLength="3"
+                                  placeholder="Ex. 6000"
+                                  contrast
+                                />
+                              </MDBCol>
+                            </MDBRow>
+                          </form>
+
+                          <hr />
+                          <div>
+                            {cartProducts?.map((product) => (
+                              <div
+                                key={product.productId}
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <p>
+                                  {product.productTitle} (
+                                  {product.quantity ? product.quantity : 1})
+                                </p>
+                                <p>
+                                  ₱{" "}
+                                  {product.price *
+                                    (product.quantity ? product.quantity : 1)}
+                                  .00
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                          <hr />
+
+                          <div className="d-flex justify-content-between">
+                            <p className="mb-2">Subtotal</p>
+                            <p className="mb-2">₱ {total}.00</p>
+                          </div>
+
+                          <div className="d-flex justify-content-between">
+                            <p className="mb-2">Delivery Fee</p>
+                            <p className="mb-2">₱ 50.00</p>
+                          </div>
+
+                          <div className="d-flex justify-content-between">
+                            <p className="mb-2">Total</p>
+                            <p className="mb-2">
+                              ₱ {Math.round(total) + (total == "0" ? 0 : 50)}.00
+                            </p>
+                          </div>
+
+                          <MDBBtn color="white" block size="lg">
+                            <div
+                              className="d-flex justify-content-between"
+                              onClick={cartCheckOut}
+                            >
+                              <span>
+                                ₱ {Math.round(total) + (total == "0" ? 0 : 50)}
+                                .00
+                              </span>
+                              <span>
+                                Checkout{" "}
+                                <i className="fas fa-long-arrow-alt-right ms-2"></i>
+                              </span>
+                            </div>
+                          </MDBBtn>
+                        </MDBCardBody>
+
+                        <Modal show={showModalOne}>
+                          <Modal.Header className="addTOCart__btn">
+                            <Modal.Title className="text-white">
+                              Congratulations!
+                            </Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body className="text-dark">
+                            Successful checkout! Please wait for a while and one
+                            of our riders will get in touch with you soon.
+                            Delivery time may span from 10-15 minutes, depending
+                            on road traffic. Again, thank you for choosing Snack
+                            Break!
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <button
+                              variant="secondary"
+                              className="addTOCart__btn"
+                              onClick={closeModalOne}
+                            >
+                              Close
+                            </button>
+                          </Modal.Footer>
+                        </Modal>
+
+                        <Modal show={showModalTwo}>
+                          <Modal.Header className="addTOCart__btn">
+                            <Modal.Title className="text-white">
+                              Oops!
+                            </Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body className="text-dark">
+                            It seems like you did not add anything to cart!
+                            Please add your desired foods to your cart before
+                            checking out. Thank you!
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <button
+                              variant="secondary"
+                              className="addTOCart__btn"
+                              onClick={closeModalTwo}
+                            >
+                              Close
+                            </button>
+                          </Modal.Footer>
+                        </Modal>
+
+                        <Modal show={showDeleteModal}>
+                          <Modal.Header className="addTOCart__btn">
+                            <Modal.Title className="text-white">
+                              Success
+                            </Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body className="text-dark">
+                            Item has been successfully deleted from your cart!
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <button
+                              variant="secondary"
+                              className="addTOCart__btn"
+                              onClick={closeDeleteModal}
+                            >
+                              Close
+                            </button>
+                          </Modal.Footer>
+                        </Modal>
+                      </MDBCard>
+                    </MDBCol>
+                  </MDBRow>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
       </section>
     </Helmet>
   );
