@@ -29,8 +29,14 @@ const Checkout = () => {
   const [cartProducts, setCartProducts] = useState([]);
   const [showModalOne, setShowModalOne] = useState(false);
   const [showModalTwo, setShowModalTwo] = useState(false);
+  const [showModalThree, setShowModalThree] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const activeUser = localStorage;
   const { getAllProductsByUser, checkOut, deleteCartProduct } =
     bindActionCreators(actionCart, useDispatch());
@@ -66,12 +72,14 @@ const Checkout = () => {
     e.preventDefault();
     if (total == "0") {
       setShowModalTwo(true);
+    } else if (!name || !phoneNumber || !address || !city || !postalCode) {
+      setShowModalThree(true);
     } else {
+      checkOut(activeUser.email).then((response) => {
+        setCartProducts(response.payload);
+      });
       setShowModalOne(true);
     }
-    checkOut(activeUser.email).then((response) => {
-      setCartProducts(response.payload);
-    });
   };
 
   const deleteProduct = (productId) => {
@@ -95,6 +103,11 @@ const Checkout = () => {
   const closeModalTwo = (e) => {
     e.preventDefault();
     setShowModalTwo(false);
+  };
+
+  const closeModalThree = (e) => {
+    e.preventDefault();
+    setShowModalThree(false);
   };
 
   const closeDeleteModal = (e) => {
@@ -250,6 +263,7 @@ const Checkout = () => {
                               size="lg"
                               placeholder="Customer's Name"
                               contrast
+                              onChange={(e) => setName(e.target.value)}
                             />
 
                             <MDBInput
@@ -261,6 +275,7 @@ const Checkout = () => {
                               maxLength="19"
                               placeholder="Customer's Phone Number"
                               contrast
+                              onChange={(e) => setPhoneNumber(e.target.value)}
                             />
 
                             <MDBInput
@@ -270,6 +285,7 @@ const Checkout = () => {
                               size="lg"
                               placeholder="Customer's Address"
                               contrast
+                              onChange={(e) => setAddress(e.target.value)}
                             />
 
                             <MDBRow className="mb-4">
@@ -281,6 +297,7 @@ const Checkout = () => {
                                   size="lg"
                                   placeholder="Ex. Cebu City"
                                   contrast
+                                  onChange={(e) => setCity(e.target.value)}
                                 />
                               </MDBCol>
                               <MDBCol md="6">
@@ -292,6 +309,9 @@ const Checkout = () => {
                                   minLength="3"
                                   placeholder="Ex. 6000"
                                   contrast
+                                  onChange={(e) =>
+                                    setPostalCode(e.target.value)
+                                  }
                                 />
                               </MDBCol>
                             </MDBRow>
@@ -393,6 +413,28 @@ const Checkout = () => {
                               variant="secondary"
                               className="addTOCart__btn"
                               onClick={closeModalTwo}
+                            >
+                              Close
+                            </button>
+                          </Modal.Footer>
+                        </Modal>
+
+                        <Modal show={showModalThree}>
+                          <Modal.Header className="addTOCart__btn">
+                            <Modal.Title className="text-white">
+                              Oops!
+                            </Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body className="text-dark">
+                            It seems like you did not finish filling out the
+                            checkout form! Kindly furnish all your details
+                            before checking out. Thank you!
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <button
+                              variant="secondary"
+                              className="addTOCart__btn"
+                              onClick={closeModalThree}
                             >
                               Close
                             </button>

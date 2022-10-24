@@ -71,7 +71,7 @@ const AllFoods = () => {
           <div className="product__content">
             <h5>{item.productTitle.substring(0, 12)}...</h5>
             <div className=" d-flex align-items-center justify-content-between ">
-              <span className="product__price">${item.price}</span>
+              <span className="product__price">₱ {item.price}</span>
               <button
                 className="addTOCart__btn"
                 onClick={
