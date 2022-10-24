@@ -110,7 +110,7 @@ const Checkout = () => {
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open
         >
-          <CircularProgress color="inherit" />
+          <CircularProgress color="error" />
         </Backdrop>
       </div>
     );
@@ -190,7 +190,7 @@ const Checkout = () => {
                                 </div>
                               </div>
                               <div className="d-flex flex-row align-items-center">
-                                <div className="" style={{ width: "80px" }}>
+                                <div className="checkout-form">
                                   <MDBInput
                                     min={1}
                                     defaultValue={1}
@@ -204,7 +204,7 @@ const Checkout = () => {
                                     }
                                   />
                                 </div>
-                                <div style={{ width: "80px" }}>
+                                <div className="checkout-form">
                                   <MDBTypography
                                     tag="h5"
                                     className="mb-0 text-center"
@@ -212,15 +212,14 @@ const Checkout = () => {
                                     ₱ {product.price}
                                   </MDBTypography>
                                 </div>
-                                <a
-                                  href="#!"
-                                  style={{ color: "#cecece" }}
+                                <span
+                                  className="addTOCart__btn"
                                   onClick={() =>
                                     deleteProduct(product.productId)
                                   }
                                 >
                                   <MDBIcon fas icon="trash-alt" />
-                                </a>
+                                </span>
                               </div>
                             </div>
                           </MDBCardBody>
@@ -302,11 +301,8 @@ const Checkout = () => {
                           <div>
                             {cartProducts?.map((product) => (
                               <div
+                                className="d-flex justify-content-between"
                                 key={product.productId}
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
                               >
                                 <p>
                                   {product.productTitle} (

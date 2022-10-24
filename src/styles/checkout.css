@@ -19,3 +19,7 @@
   width: 70px;
   filter: invert(100%);
 }
+
+.checkout-form {
+  width: 80px;
+}

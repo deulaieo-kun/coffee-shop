@@ -38,7 +38,7 @@ const Login = () => {
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open
         >
-          <CircularProgress color="inherit" />
+          <CircularProgress color="error" />
         </Backdrop>
       </div>
     );

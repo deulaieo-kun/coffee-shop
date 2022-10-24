@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "../styles/home.css";
 import featureImg01 from "../assets/images/service-01.png";
 import featureImg02 from "../assets/images/service-02.png";
@@ -19,18 +19,18 @@ const featureData = [
   {
     title: "Quick Delivery",
     imgUrl: featureImg01,
-    desc: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus, doloremque.",
+    desc: "We promise to make it quick, from preparing your foood until it reaches your location.",
   },
 
   {
     title: "Super Dine In",
     imgUrl: featureImg02,
-    desc: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus, doloremque.",
+    desc: "You can also dine in our restaurant for faster transactions, we got you covered on that too.",
   },
   {
     title: "Easy Pick Up",
     imgUrl: featureImg03,
-    desc: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus, doloremque.",
+    desc: "Going home with no food? Just order online and we'll prepare your order in advance for you.",
   },
 ];
 
@@ -48,8 +48,8 @@ const Home = () => {
                 </h1>
 
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-                  magni delectus tenetur autem, sint veritatis!
+                  No need to get out of the house and wait in long lines to
+                  satisfy your cravings, order now at Snack Break!
                 </p>
 
                 <div className=" hero__service  d-flex align-items-center gap-5 mt-5 ">
@@ -90,15 +90,13 @@ const Home = () => {
               <h5 className="feature__subtitle mb-4">What we serve</h5>
               <h2 className="feature__title">Just sit back at home</h2>
               <h2 className="feature__title">
-                we will <span>take care</span>
+                we got your <span>cravings</span> covered
               </h2>
               <p className="mb-1 mt-4 feature__text">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor,
-                officiis?
+                With just a few taps on your phone, feast upon our hearty meals
               </p>
               <p className="feature__text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Aperiam, eius.{" "}
+                no matter where you are without breaking your budget{" "}
               </p>
             </Col>
 
@@ -224,21 +222,22 @@ const Home = () => {
                   Why <span>Snack Break?</span>
                 </h2>
                 <p className="tasty__treat-desc">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Dolorum, minus. Tempora reprehenderit a corporis velit,
-                  laboriosam vitae ullam, repellat illo sequi odio esse iste
-                  fugiat dolor, optio incidunt eligendi deleniti!
+                  Snack Break can guarantee that our meals are made with the
+                  best ingredients so that you can enjoy our foods without
+                  having to worry about its quality before ordering, added to
+                  that our significantly reduced waiting time for great customer
+                  experience, only here on Snack Break!
                 </p>
 
                 <ListGroup className="mt-4">
                   <ListGroupItem className="border-0 ps-0">
                     <p className=" choose__us-title d-flex align-items-center gap-2 ">
                       <i className="ri-checkbox-circle-line"></i> Fresh and
-                      tasty foods
+                      Tasty Foods
                     </p>
                     <p className="choose__us-desc">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quia, voluptatibus.
+                      Let your stomachs and hearts be filled with our heavenly
+                      meals.
                     </p>
                   </ListGroupItem>
 
@@ -248,8 +247,8 @@ const Home = () => {
                       support
                     </p>
                     <p className="choose__us-desc">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Qui, earum.
+                      Having troubles? Let us help you have a better customer
+                      experience.
                     </p>
                   </ListGroupItem>
 
@@ -259,8 +258,8 @@ const Home = () => {
                       location{" "}
                     </p>
                     <p className="choose__us-desc">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Qui, earum.
+                      We are confident in serving you our meals anytime,
+                      anywhere.
                     </p>
                   </ListGroupItem>
                 </ListGroup>
@@ -280,9 +279,8 @@ const Home = () => {
                   What our <span>customers</span> are saying
                 </h2>
                 <p className="testimonial__desc">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Distinctio quasi qui minus quos sit perspiciatis inventore
-                  quis provident placeat fugiat!
+                  Having doubts? Take a quick look at what our reputable
+                  customers have to say in the foods that we serve!
                 </p>
                 <TestimonialSlider />
               </div>

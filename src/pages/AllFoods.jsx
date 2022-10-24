@@ -28,17 +28,19 @@ const AllFoods = () => {
   useEffect(() => {
     setLoading(true);
     getAllProducts().then((response) => {
-      const allProducts = response.payload;
+      setTimeout(() => {
+        const allProducts = response.payload;
 
-      if (activeFilter !== "ALL") {
-        setProducts(
-          allProducts.filter((data) => data.category === activeFilter)
-        );
-        setLoading(false);
-      } else {
-        setProducts(allProducts);
-        setLoading(false);
-      }
+        if (activeFilter !== "ALL") {
+          setProducts(
+            allProducts.filter((data) => data.category === activeFilter)
+          );
+          setLoading(false);
+        } else {
+          setProducts(allProducts);
+          setLoading(false);
+        }
+      }, 1000);
     });
   }, [activeFilter]);
 
