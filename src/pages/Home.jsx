@@ -57,7 +57,7 @@ const Home = () => {
                     <span className="shipping__icon">
                       <i className="ri-car-line"></i>
                     </span>{" "}
-                    Very low shipping fee
+                    Very affordable delivery fees
                   </p>
 
                   <p className=" d-flex align-items-center gap-2 ">

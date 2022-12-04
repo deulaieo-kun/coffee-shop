@@ -8,7 +8,7 @@
   text-align: center;
 }
 .logo img {
-  width: calc(100% -60%);
+  width: calc(100% -40%);
   object-fit: contain;
 }
 
@@ -79,7 +79,7 @@
 
 @media only screen and (max-width: 992px) {
   .logo img {
-    width: calc(100% - 70%);
+    width: calc(100% - 50%);
   }
   .logo h5 {
     font-size: 0.8rem;
