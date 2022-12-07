@@ -2,7 +2,7 @@
   "name": "coffee-shop",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://snackbreak.herokuapp.com",
+  "proxy": "https://online-food-delivery-be-production.up.railway.app",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",

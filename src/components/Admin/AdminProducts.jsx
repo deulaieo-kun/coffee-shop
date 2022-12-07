@@ -92,7 +92,7 @@ export default function AdminProducts() {
       // Upload Image
       axios
         .put(
-          `https://snackbreak.herokuapp.com/product/${product.productId}/upload`,
+          `https://online-food-delivery-be-production.up.railway.app/product/${product.productId}/upload`,
           formData,
           {
             headers: {
@@ -126,7 +126,7 @@ export default function AdminProducts() {
                 fluid
                 src={
                   product.imageLinkOne
-                    ? `https://snackbreak.herokuapp.com/product/${product.productId}/download`
+                    ? `https://online-food-delivery-be-production.up.railway.app/product/${product.productId}/download`
                     : empty
                 }
                 alt={product.productTitle}

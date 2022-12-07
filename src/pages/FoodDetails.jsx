@@ -68,7 +68,7 @@ const FoodDetails = () => {
                 <img
                   src={
                     selectedFoods.imageLinkOne
-                      ? `https://snackbreak.herokuapp.com/product/${selectedFoods.productId}/download`
+                      ? `https://online-food-delivery-be-production.up.railway.app/product/${selectedFoods.productId}/download`
                       : empty
                   }
                   alt={selectedFoods.productTitle}
@@ -114,7 +114,7 @@ const FoodDetails = () => {
               <img
                 src={
                   selectedFoods.imageLinkOne
-                    ? `https://snackbreak.herokuapp.com/product/${selectedFoods.productId}/download`
+                    ? `https://online-food-delivery-be-production.up.railway.app/product/${selectedFoods.productId}/download`
                     : empty
                 }
                 alt={selectedFoods.productTitle}
@@ -156,7 +156,7 @@ const FoodDetails = () => {
                 <img
                   src={
                     foods.imageLinkOne
-                      ? `https://snackbreak.herokuapp.com/product/${foods.productId}/download`
+                      ? `https://online-food-delivery-be-production.up.railway.app/product/${foods.productId}/download`
                       : empty
                   }
                   alt={foods.productTitle}

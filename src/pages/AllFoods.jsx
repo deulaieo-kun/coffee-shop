@@ -60,7 +60,7 @@ const AllFoods = () => {
               <img
                 src={
                   item.imageLinkOne
-                    ? `https://snackbreak.herokuapp.com/product/${item.productId}/download`
+                    ? `https://online-food-delivery-be-production.up.railway.app/product/${item.productId}/download`
                     : empty
                 }
                 alt={item.productTitle}

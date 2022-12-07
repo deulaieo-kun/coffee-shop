@@ -82,7 +82,7 @@ export default function AdminReviews() {
       // Upload to s3
       axios
         .put(
-          `https://snackbreak.herokuapp.com/review/${review.reviewId}/upload`,
+          `https://online-food-delivery-be-production.up.railway.app/review/${review.reviewId}/upload`,
           formData,
           {
             headers: {
@@ -116,7 +116,7 @@ export default function AdminReviews() {
                 fluid
                 src={
                   review.imageLink
-                    ? `https://snackbreak.herokuapp.com/review/${review.reviewId}/download`
+                    ? `https://online-food-delivery-be-production.up.railway.app/review/${review.reviewId}/download`
                     : empty
                 }
                 alt={review.reviewAuthor}

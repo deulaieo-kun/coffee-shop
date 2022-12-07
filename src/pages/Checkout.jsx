@@ -188,7 +188,7 @@ const Checkout = () => {
                                   <img
                                     src={
                                       product.imageLinkOne
-                                        ? `https://snackbreak.herokuapp.com/product/${product.productId}/download`
+                                        ? `https://online-food-delivery-be-production.up.railway.app/product/${product.productId}/download`
                                         : empty
                                     }
                                     alt={product.productTitle}

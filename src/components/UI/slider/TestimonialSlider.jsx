@@ -35,7 +35,7 @@ const TestimonialSlider = () => {
             <img
               src={
                 review.imageLink
-                  ? `https://snackbreak.herokuapp.com/review/${review.reviewId}/download`
+                  ? `https://online-food-delivery-be-production.up.railway.app/review/${review.reviewId}/download`
                   : empty
               }
               alt={review.reviewAuthor}
